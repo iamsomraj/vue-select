@@ -18,8 +18,6 @@ const props = defineProps({
     value: (value) => value.label && value.value,
   },
 });
-const widthStyles = computed(() => props.widthStyles);
-const value = computed(() => props.modelValue);
 /* PROPS */
 
 /* EMITS */
@@ -27,6 +25,34 @@ const emits = defineEmits(["update:modelValue", "input", "change"]);
 /* EMITS */
 
 const isOpen = ref(false);
+const highlightedIndex = ref(0);
+const widthStyles = computed(() => props.widthStyles);
+const modelValue = computed(() => props.modelValue);
+
+const toggleIsOpen = () => (isOpen.value = !isOpen.value);
+
+const clearOption = (event) => {
+  event.stopPropagation();
+  emits("update:modelValue", null);
+  emits("input", null);
+  emits("change", null, modelValue.value);
+};
+
+const selectOption = (event, option) => {
+  event.stopPropagation();
+
+  if (option.value === modelValue.value) {
+    isOpen.value = false;
+    return;
+  }
+
+  emits("update:modelValue", option);
+  emits("input", option);
+  emits("change", option, modelValue.value);
+
+  isOpen.value = false;
+};
+const isOptionSelected = (option) => option.value === modelValue.value.value;
 </script>
 
 <template>
@@ -34,16 +60,18 @@ const isOpen = ref(false);
   <div
     tabindex="0"
     class="select-container"
+    @click="toggleIsOpen"
+    @blur="isOpen = false"
     :class="{
       [widthStyles]: true,
     }"
   >
     <!-- VALUE -->
-    <span class="value">{{ value?.label }}</span>
+    <span class="value">{{ modelValue?.label }}</span>
     <!-- VALUE -->
 
     <!-- CLEAR BUTTON -->
-    <button class="clear-btn">&times;</button>
+    <button class="clear-btn" @click="clearOption">&times;</button>
     <!-- CLEAR BUTTON -->
 
     <!-- DIVIDER -->
@@ -75,9 +103,15 @@ const isOpen = ref(false);
     >
       <!-- OPTION ITEM -->
       <li
-        v-for="option in options"
+        v-for="(option, index) in options"
         :key="option.value"
-        class="option highlighted"
+        class="option"
+        :class="{
+          selected: isOptionSelected(option),
+          highlighted: highlightedIndex === index,
+        }"
+        @click="selectOption($event, option)"
+        @mouseenter="highlightedIndex = index"
       >
         {{ option.label }}
       </li>
@@ -123,11 +157,11 @@ const isOpen = ref(false);
 .option {
   @apply cursor-pointer p-2 text-gray-700;
 }
-.option.highlighted {
-  @apply bg-blue-500 text-white;
-}
 
 .option.selected {
-  @apply bg-blue-100 text-white;
+  @apply bg-blue-100;
+}
+.option.highlighted {
+  @apply bg-blue-500 text-white;
 }
 </style>
