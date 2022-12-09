@@ -1,5 +1,7 @@
 <script setup>
+import { ref } from "vue";
 import VueSelect from "./components/VueSelect.vue";
+
 const options = [
   { label: "First", value: 1 },
   { label: "Second", value: 2 },
@@ -7,9 +9,11 @@ const options = [
   { label: "Fourth", value: 4 },
   { label: "Fifth", value: 5 },
 ];
-const value = ref(1);
+const value = ref(options[0]);
 </script>
 
 <template>
-  <VueSelect :options="options" v-model="value" />
+  <div class="flex min-h-screen items-center justify-center">
+    <VueSelect :options="options" v-model="value" />
+  </div>
 </template>
