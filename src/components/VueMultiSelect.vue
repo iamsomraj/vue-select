@@ -212,6 +212,10 @@ watch(
 .value-badge:hover .value-badge-remove {
   @apply text-red-500;
 }
+
+.placeholder {
+  @apply text-gray-500;
+}
 .clear-btn {
   @apply cursor-pointer p-0 text-lg text-gray-500 outline-none;
 }
