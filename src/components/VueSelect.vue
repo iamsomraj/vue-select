@@ -124,10 +124,7 @@ const isOptionSelected = (option) => option.value === modelValue.value.value;
 
 <style lang="postcss" scoped>
 .select-container {
-  @apply relative flex items-center gap-2 rounded-md border border-gray-300 bg-white p-2 outline-none;
-}
-.select-container:focus {
-  @apply border-blue-500;
+  @apply relative flex items-center gap-3 rounded-md bg-white p-3 outline-none;
 }
 .value {
   @apply flex-grow;
@@ -147,7 +144,7 @@ const isOptionSelected = (option) => option.value === modelValue.value.value;
   @apply h-5 w-5 text-gray-500;
 }
 .options {
-  @apply absolute left-0 top-full my-2 hidden max-h-60 w-full overflow-y-auto rounded-md border border-gray-300 bg-white p-0;
+  @apply absolute left-0 top-full my-2 hidden max-h-60 w-full overflow-y-auto rounded-md bg-white p-0;
 }
 
 .options.show {
@@ -155,7 +152,7 @@ const isOptionSelected = (option) => option.value === modelValue.value.value;
 }
 
 .option {
-  @apply cursor-pointer p-2 text-gray-700;
+  @apply cursor-pointer p-3 text-gray-700;
 }
 
 .option.selected {

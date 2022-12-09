@@ -13,7 +13,9 @@ const value = ref(options[0]);
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center">
+  <div
+    class="flex min-h-screen items-center justify-center bg-gradient-to-b from-yellow-100 to-red-100"
+  >
     <VueSelect :options="options" v-model="value" />
   </div>
 </template>
