@@ -5,6 +5,10 @@ import { ref, computed, watch } from "vue";
 
 /* PROPS */
 const props = defineProps({
+  searchable: {
+    type: Boolean,
+    default: true,
+  },
   widthStyles: {
     type: String,
     default: "w-64",
@@ -26,8 +30,19 @@ const emits = defineEmits(["update:modelValue", "input", "change"]);
 
 const isOpen = ref(false);
 const highlightedIndex = ref(0);
+const searchFilter = ref("");
 const widthStyles = computed(() => props.widthStyles);
 const modelValue = computed(() => props.modelValue);
+const searchable = computed(() => props.searchable);
+const options = computed(() => {
+  if (!searchable.value) {
+    return props.options;
+  }
+  // Filter options by searchFilter
+  return props.options.filter((option) =>
+    option.label.toLowerCase().includes(searchFilter.value.toLowerCase())
+  );
+});
 
 const toggleIsOpen = () => (isOpen.value = !isOpen.value);
 
@@ -52,6 +67,10 @@ const selectOption = (event, option) => {
   emits("change", [...modelValue.value, option], [...modelValue.value]);
 
   isOpen.value = false;
+
+  if (searchable.value && searchFilter?.value?.trim()?.length > 0) {
+    searchFilter.value = "";
+  }
 };
 
 const removeOption = (event, option) => {
@@ -104,8 +123,44 @@ watch(
       [widthStyles]: true,
     }"
   >
-    <!-- VALUE -->
-    <span class="value">
+    <!-- VALUE WHEN SEARCHABLE -->
+    <span v-if="searchable" class="value searchable">
+      <!-- IF MODEL VALUE IS NOT EMPTY, THEN SHOW IT -->
+      <template v-if="modelValue.length > 0">
+        <span
+          v-for="option in modelValue"
+          :key="option.value"
+          class="value-badge"
+        >
+          <!-- VALUE BADGE LABEL -->
+          <span>
+            {{ option.label }}
+          </span>
+          <!-- VALUE BADGE LABEL -->
+
+          <!-- VALUE BADGE REMOVE -->
+          <button
+            class="value-badge-remove"
+            @click="removeOption($event, option)"
+          >
+            &times;
+          </button>
+          <!-- VALUE BADGE REMOVE -->
+        </span>
+        <input type="text" class="search-input" v-model="searchFilter" />
+      </template>
+      <!-- IF MODEL VALUE IS NOT EMPTY, THEN SHOW IT -->
+
+      <!-- IF MODEL VALUE IS EMPTY, THEN SHOW PLACEHOLDER -->
+      <template v-else>
+        <span class="placeholder">Select an option</span>
+      </template>
+      <!-- IF MODEL VALUE IS EMPTY, THEN SHOW PLACEHOLDER -->
+    </span>
+    <!-- VALUE WHEN SEARCHABLE -->
+
+    <!-- VALUE WHEN NOT SEARCHABLE -->
+    <span v-else class="value">
       <!-- IF MODEL VALUE IS NOT EMPTY, THEN SHOW IT -->
       <template v-if="modelValue.length > 0">
         <span
@@ -137,7 +192,7 @@ watch(
       </template>
       <!-- IF MODEL VALUE IS EMPTY, THEN SHOW PLACEHOLDER -->
     </span>
-    <!-- VALUE -->
+    <!-- VALUE WHEN NOT SEARCHABLE -->
 
     <!-- CLEAR BUTTON -->
     <button class="clear-btn" @click="clearOption">&times;</button>
@@ -196,16 +251,20 @@ watch(
   @apply relative flex items-center gap-3 rounded-md bg-white p-3 outline-none;
 }
 .value {
-  @apply flex-grow;
+  @apply flex flex-grow overflow-x-auto scroll-smooth;
 }
-
-.value-badge {
-  @apply m-1 inline-block rounded-md bg-blue-100 px-2 py-1 text-blue-500;
+.value.searchable {
+  @apply flex-grow;
 }
 .value-badge:hover {
   @apply bg-red-100 text-red-500;
 }
-
+.value-badge {
+  @apply m-1 flex rounded-md bg-blue-100 px-2 py-1 text-blue-500;
+}
+.search-input {
+  @apply flex-grow bg-transparent text-gray-500 outline-none;
+}
 .value-badge-remove {
   @apply ml-1 cursor-pointer text-blue-500;
 }
@@ -247,5 +306,9 @@ watch(
 }
 .option.highlighted {
   @apply bg-blue-500 text-white;
+}
+
+::-webkit-scrollbar {
+  @apply h-0 w-0 bg-transparent;
 }
 </style>
