@@ -1,7 +1,3 @@
-# Vue 3 + Vite
+# Vue Select
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+The template uses Vue 3 `<script setup>` SFCs. Vue Select is a repository containing custom single select and custom multi select component. It has props for customizing the component. Future scope includes adding more props for customizing the component and adding slot for customizing the component.
